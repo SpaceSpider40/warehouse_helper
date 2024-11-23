@@ -1,4 +1,5 @@
 import "package:sqflite/sqflite.dart";
+import "package:warehouse_helper/entities/note.dart";
 
 class NoteDatabase {
   static final NoteDatabase instance = NoteDatabase._internal();
@@ -30,6 +31,7 @@ class NoteDatabase {
   }
 
   Future<Database> _initDatabase() async {
+
     final databasePath = await getDatabasesPath();
     final path = '$databasePath/warehouseNotes.db';
 
@@ -38,5 +40,26 @@ class NoteDatabase {
       version: 1,
       onCreate: _createDatabase,
     );
+  }
+
+  Future<void> insertNote(Note note) async =>
+      await (await database).insert('notes', note.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+
+  Future<List<Note>> findNotes() async {
+    final db = await database;
+
+    final List<Map<String, Object?>> notesMap = await db.query('notes');
+
+    return [
+      for (final {
+            'id': id as int,
+            'title': title as String,
+            'part': part as String,
+            'warehouse': warehouse as String,
+            'img': img as String
+          } in notesMap)
+        Note(id: id, title: title, part: part, warehouse: warehouse, img: img)
+    ];
   }
 }

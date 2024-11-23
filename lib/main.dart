@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:warehouse_helper/add_page.dart';
 import 'package:warehouse_helper/note_tile.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+void main() async {
+  sqfliteFfiInit();
+
+  databaseFactory = databaseFactoryFfi;
+
   runApp(const MyApp());
 }
 
@@ -17,7 +23,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Warehouse Helper'),
+      // home: const MyHomePage(title: 'Warehouse Helper'),
+      home: const AddPage(title: 'Add Note')
     );
   }
 }
